@@ -2,14 +2,14 @@
 % This script is used to shear the TPM images according to the conversion matrices.
 % Image is 180 degree rotated and scaling in X and Y axis are different.
 
-addpath('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191106_POP_ModelBasedWFS');
-filename = '1X512_PDMSdiffuser_00001.tif'; %Change this file name to shear the TPM images acquired using scan image
+addpath('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191122_WFScomparison_vs_depth_PDMSdiffuser');
+filename = 'file_00001.tif'; %Change this file name to shear the TPM images acquired using scan image
 
 %% Make 3D volime image from TPM images
 info = imfinfo(filename);
 N = size(info,1);                                           % Number of 2D images
-zoom = 1;
-numPixels= 512;
+zoom = 2;
+numPixels= 256;
 resX = 512/(numPixels*zoom)                                 % Resolution in X direction
 resY = 512/(numPixels*zoom)                                 % Resolution in Y direction
 
@@ -27,7 +27,7 @@ for i = 1:N
 end 
 
 %% Choose a desired side length of the TPM images
-dnom=300;                                                              % How deep to focus
+dnom=150;                                                              % How deep to focus
 Reduced_FieldSize=round(dnom*tand(37)*2);                              % Field size (Distance between focus and interface*1.33(WATER)/1.51(GP))+Distance between SLM and interface)*tand(37)).
 Reduced_FieldSize= Reduced_FieldSize-mod(Reduced_FieldSize,2);         % Round the value to nearest even number
 
@@ -46,4 +46,4 @@ for i = 1:N
 %     drawnow
 end 
 
-clearvars -except Stack_3D N hSI hSICtl
+clearvars -except Stack_3D N hSI hSICtl 

@@ -17,5 +17,5 @@ slm.setData(ideal_wavefront); slm.update;
 
 %% Set wavefront obtained by model-based WFS
 load([dirname,'d',num2str(d_nom,'%.3d'),'um_model.mat']);
-slm.setQuadGeometry(1, [-0.4712 0.4886; 0.4698 0.4886; 0.4712 -0.4886; -0.4698 -0.4886]+[sopt.cx-0.038 sopt.cy+0.01]);
+slm.setQuadGeometry(1, [-0.4712 0.4886; 0.4698 0.4886; 0.4712 -0.4886; -0.4698 -0.4886]+[sopt.cx sopt.cy]);
 slm.setData(SLMCorrection); slm.update;

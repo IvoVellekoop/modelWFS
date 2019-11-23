@@ -54,7 +54,7 @@ PDMS_thickness=round(median(median(maximum)));
 toc
 %% Interpolate the Zmax corresponding to the point of inflection. 
 zmultiplier=3;
-IntX=linspace(1,size(Sub_Stack_3D,1),5*size(Sub_Stack_3D,1));IntY=linspace(1,size(Sub_Stack_3D,1),5*size(Sub_Stack_3D,1)); IntZ=linspace(1,60,60*zmultiplier);
+IntX=linspace(1,size(Sub_Stack_3D,1),5*size(Sub_Stack_3D,1));IntY=linspace(1,size(Sub_Stack_3D,1),5*size(Sub_Stack_3D,1)); IntZ=linspace(1,N,N*zmultiplier);
 [IntX,IntY]=ndgrid(IntX,IntY);
 
 maximum_filtered = medfilt2(maximum);
@@ -66,7 +66,7 @@ maximum_filtered = medfilt2(maximum);
 
 MAX = round(zmultiplier*interpn(maximum_filtered,IntX,IntY, 'cubic'));
 
-Super_Stack_3D=zeros(5*size(Sub_Stack_3D,1),5*size(Sub_Stack_3D,1),60*zmultiplier);
+Super_Stack_3D=zeros(5*size(Sub_Stack_3D,1),5*size(Sub_Stack_3D,1),N*zmultiplier);
 nInt=5;
 Size_vec2=size(out)*nInt;
 MAX(MAX<0)=[1];
@@ -79,10 +79,10 @@ end
         
 %% Plot the refractive index and the TPM intensity
 
-for kk=20:22
+for kk=35
 figure, imagesc(squeeze(Stack_3D(:,kk,:)))
 figure, imagesc(squeeze(Super_Stack_3D(:,5*kk,:)))
 end
-Super_Stack_3D=Super_Stack_3D(:,:,1:180);
+Super_Stack_3D=Super_Stack_3D(:,:,1:3*N);
 
-clearvars -except Stack_3D Super_Stack_3D MAX hSICtl hSI PDMS_thickness
+clearvars -except Stack_3D Super_Stack_3D MAX hSICtl hSI PDMS_thickness N

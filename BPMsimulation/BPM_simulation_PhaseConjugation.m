@@ -1,6 +1,6 @@
 %%% Simulates the wave propagation of a converging beam with NA of the TPM objective lens through
 %%% two media with a corrogated interface using beam propagation model.
-%%% By manuallychanging the depth (variable-> dnom) of the desired focus, we can simlate the
+%%% By manuallychanging the depth (variable-> d_nom) of the desired focus, we can simlate the
 %%% correction wavefront
 %%% Edited by Abhilash Thendiyammal 2019
 % clc;
@@ -22,8 +22,8 @@ Xe=linspace(-FieldSize/2,FieldSize/2,npts);                     % space scale in
 [X,Y]=meshgrid(Xe,-Xe);
 E0=exp(1i*(k0*0.*X+k0*0.*Y));                                   % E: input field, plane wave here
 
-dnom=300;                                                        % How deep to focus
-Reduced_FieldSize=round(dnom*tand(37)*2);                       % Field size (Distance between focus and interface*1.33(WATER)/1.51(GP))+Distance between SLM and interface)*tand(37)).
+d_nom=150;                                                        % How deep to focus
+Reduced_FieldSize=round(d_nom*tand(37)*2);                       % Field size (Distance between focus and interface*1.33(WATER)/1.51(GP))+Distance between SLM and interface)*tand(37)).
 Reduced_FieldSize= Reduced_FieldSize-mod(Reduced_FieldSize,2);  % Round the value to nearest even number
 Reduced_npts=round((Reduced_FieldSize/opt.pixel_size));         % Reduced number of data points
 E0_reduced=E0(size(E0,1)/2-(Reduced_npts/2-1):size(E0,1)/2+Reduced_npts/2,size(E0,1)/2-(Reduced_npts/2-1):size(E0,1)/2+Reduced_npts/2);
@@ -35,7 +35,7 @@ clear npts;
 %% Import 3D refractive index medium 
 % Sample interface from TPM (Import refractive index generated from TPM)
 
-load('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191106_POP_ModelBasedWFS\340um\Sample_RI_stretched.mat');
+load('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191122_WFScomparison_vs_depth_PDMSdiffuser\RefractiveIndex.mat');
 
 Xshift=0;                                                      % Shift center if required
 Yshift=0;                                                      % Shift center if required
@@ -60,7 +60,7 @@ clear Super_Stack_3D_reduced
 
 %% Simulate Spherical Abberation through Corrogated Interface
 
-f_air=dnom/1.33;                                                % focal length in air (um)
+f_air=d_nom/1.33;                                                % focal length in air (um)
 f_m1 = f_air*1.33;                                              % focal length in medium 1 (um)
 f_m2 = f_air*1.41;                                              % focal length in medium 2 (um)
 D = Reduced_FieldSize;                                          % diameter of the gaussian window (um)
@@ -79,10 +79,10 @@ end
 clear n_sample;
 
 %% Calculate the sample wavefront
-%simulate through 3D refractive index media for 60 um
+%simulate through 3D refractive index media for N um
 
 tic();
-LayerThickness=(60-PDMS_thickness)+PDMS_thickness*1.06;                                      % TPM layer thickness                        
+LayerThickness=(N-PDMS_thickness)+PDMS_thickness*1.06;                                      % TPM layer thickness                        
 [E1, E3D1] = propagate(E, n_sample_rev, LayerThickness); 
 figure(1); imagesc(E3D1(end/2, :, :));                          %cross section in x-z plane
 figure(); imagesc(E3D1(:,:,end));                               %cross section in focal plane (xy)
@@ -137,4 +137,4 @@ figure(); imagesc(SLMCorrection);
 %% save the important files
 dirname = 'P:\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191122_WFScomparison_vs_depth_PDMSdiffuser\';
 filename = ['d',num2str(d_nom,'%.3d'),'um_model.mat'];
-save([dirname,filename],'SLM_Correction_Pattern','SLMCorrection','dnom');
+save([dirname,filename],'SLM_Correction_Pattern','SLMCorrection','d_nom');
