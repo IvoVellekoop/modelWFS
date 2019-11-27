@@ -4,7 +4,7 @@
 %%% to obtain SLMCorrection
 
 %% General information
-dirname = 'P:\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191122_WFScomparison_vs_depth_PDMSdiffuser\';
+dirname = 'P:\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191123_WFScomparison_vs_depth_PDMSdiffuser\';
 
 %% set flat wavefront
 slm.setRect(1,[0,0,0,0]);
