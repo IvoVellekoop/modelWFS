@@ -76,5 +76,5 @@ figure(1); surf(z_interface); shading interp; % check surface fit
 
 % plot example 2d slice of refractive index and compare to TPM data
 figure(2);
-subplot(1,2,1); imagesc(squeeze(TPM_3D(end/2,:,:))'); colormap(hot); axis image; axis off;
-subplot(1,2,2); imagesc(squeeze(n_sample(end/2,:,:))'); colormap(parula); axis image; axis off;
+subplot(1,2,1); imagesc(squeeze(TPM_3D(end/2,:,:))'); axis image; axis off; set(gca,'YDir','normal');
+subplot(1,2,2); imagesc(squeeze(n_sample(end/2,:,:))'); axis image; axis off; set(gca,'YDir','normal');
