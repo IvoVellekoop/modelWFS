@@ -7,43 +7,27 @@ filename = 'file_00001.tif'; %Change this file name to shear the TPM images acqu
 
 %% Make 3D volime image from TPM images
 info = imfinfo(filename);
-N = size(info,1);                                           % Number of 2D images
+Nslices = size(info,1);                           % Number of 2D images
+
+% scan image settings
 zoom = 2;
 numPixels= 256;
-resX = 512/(numPixels*zoom)                                 % Resolution in X direction
-resY = 512/(numPixels*zoom)                                 % Resolution in Y direction
 
 %% Use conversion matrix to shear the TPM image using imwarp function in matlab
+% find conversion matrix 
+resX = 512/(numPixels*zoom);                      % Resolution in X direction
+resY = 512/(numPixels*zoom);                      % Resolution in Y direction
 tform =affine2d([-1.529*resX 0 0; -0.005*resX -1.499*resY 0; 0 0 1]); % Resolution in X and Y changes after converting images using conversion matrix
 
-for i = 1:N
+% shear imaging using conversion matrix and combine image stacks
+TPM_3D = [];
+for i = 1:Nslices
     TPMImage = imread(filename,i, 'Info', info);
     TPMImage= imwarp(TPMImage,tform);
-    TPMImage(TPMImage<0)=0;                                           % Remove negative values(background)
+    TPMImage(TPMImage<0)=0;                                % Remove negative values(background)
     TPM_3D(:,:,i) = TPMImage;
-%     imagesc(TPMImage);
-%     colormap('hot');colorbar
-%     drawnow
 end 
 
-%% Choose a desired side length of the TPM images
-dnom=150;                                                              % How deep to focus
-Reduced_FieldSize=round(dnom*tand(37)*2);                              % Field size (Distance between focus and interface*1.33(WATER)/1.51(GP))+Distance between SLM and interface)*tand(37)).
-Reduced_FieldSize= Reduced_FieldSize-mod(Reduced_FieldSize,2);         % Round the value to nearest even number
-
-TPM_width = round(Reduced_FieldSize/10)*10+10;                         % Round the value to nearest number divisible by 10
-TPM_sub3D =TPM_3D(round(end/2)-TPM_width/2:round(end/2)+TPM_width/2-1, round(end/2)-TPM_width/2:round(end/2)+TPM_width/2-1, :);
-
-%% create the Stack_3D
-
-for i = 1:N
-    currentImage = TPM_sub3D(:,:,i);
-    currentImage=squeeze(mean(reshape(mean(reshape(currentImage,5,[])),size(currentImage,1)/5,5,[]),2)); %%Average and squeeze the image so that uniform intensity can be generated.
-    currentImage(currentImage<0)=0;           %Remove negative values(background)
-    Stack_3D(:,:,i) = currentImage;
-%     imagesc(currentImage);
-%     colormap('hot');colorbar
-%     drawnow
-end 
-
-clearvars -except Stack_3D N hSI hSICtl 
+% crop stretched parts of image stack to get a square image slices
+im_width = floor(min(size(TPM_3D,1),size(TPM_3D,2))/10)*10; % nearest number divisible by 10
+TPM_3D = TPM_3D(floor(end/2)+(-im_width/2:im_width/2-1),floor(end/2)+(-im_width/2:im_width/2-1),:);
