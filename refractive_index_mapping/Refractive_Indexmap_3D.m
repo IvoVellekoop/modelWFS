@@ -15,7 +15,7 @@ addpath('..\..\..\utilities');
 n_slices = size(TPM_3D,3);
 
 %% Fitting parameters
-d_sample = 20;                  % downsample factor used to speed up fitting of surface
+d_sample = 10;                  % downsample factor used to speed up fitting of surface
 u_sample = 3;                   % upsample factor from tpm data to simulation grid
 pdms_slices = 1:10;             % assumption: first 10 layers always consist of PDMS
 fluo_slices = n_slices+(-9:0);  % assumption: last 10 layers always consist of fluorescene

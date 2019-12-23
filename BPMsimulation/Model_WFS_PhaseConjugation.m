@@ -4,10 +4,10 @@
 
 % clc;
 % close all; clear all
-addpath('D:\git\bpm'); % add bpm path
+addpath('C:\git\bpm'); % add bpm path
 
 %% simulation starting parameters
-f_depth = 320;                  % focus depth (in um) % Note: update in between measurements
+f_depth = 80;                  % focus depth (in um) % Note: update in between measurements
 opt.pixel_size = 1/3;           % grid pixel size (in um)
 n_pdms =1.41;                   % PDMS Refractive index 
 n_water = 1.33;                 % water refractive index
@@ -15,8 +15,8 @@ opt.lambda = 0.804/n_water;     % wavelength in water (in um)
 focus_angle = 37;               % focusing angle of microscope objective (in water)
 
 % refractive index map (path way)
-dirname = 'P:\TNW\BMPI\Users\Abhilash Thendiyammal\Research@UT\Data\';
-filename = 'n_sample.mat';
+dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191223_WFScomparison_vs_depth_PDMSdiffuser\';
+filename = 'SampleProperties.mat';
 
 %% Import 3D refractive index medium 
 load([dirname,filename]);
@@ -66,9 +66,12 @@ mask2D = x.^2 + y.^2 <= kNA;
 %% Calculate correction wavefront
 CorrectionWF=E4(end/2-NAradius:end/2+NAradius,end/2-NAradius:end/2+NAradius);
 CorrectionWF_SLM= mask2D.*CorrectionWF;                 % correction wavefront masked with unity NA
-SLM_Correction_Pattern=exp(-1.0i*angle(CorrectionWF_SLM));     
 
 %% Mapping to SLM
-SLMCorrection=angle(SLM_Correction_Pattern)*(256/(2*pi));   % correction wavefront in gray values
+SLMCorrection=angle(CorrectionWF_SLM)*(256/(2*pi));   % correction wavefront in gray values
 SLMCorrection=flip(SLMCorrection,1);                       % pattern flipped because of 4f-system between objective and SLM
-figure(); imagesc(SLMCorrection);                       
+figure(); imagesc(SLMCorrection);  
+%% save data
+dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191223_WFScomparison_vs_depth_PDMSdiffuser\';
+filename = ['d',num2str(f_depth,'%.3d'),'um_model.mat'];
+save([dirname,filename],'SLMCorrection','f_depth','CorrectionWF_SLM');
