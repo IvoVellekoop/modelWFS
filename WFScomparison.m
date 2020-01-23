@@ -16,6 +16,6 @@ sopt.N = slm.setBlockGeometry(1, sopt.diameter, sopt.N_diameter, sopt.cx, sopt.c
 slm.setData(ideal_wavefront); slm.update;
 
 %% Set wavefront obtained by model-based WFS
-% load([dirname,'d',num2str(f_depth,'%.3d'),'um_model.mat']);
+load([dirname,'d',num2str(f_depth,'%.3d'),'um_model.mat']);
 slm.setQuadGeometry(1, [-0.4712 0.4886; 0.4698 0.4886; 0.4712 -0.4886; -0.4698 -0.4886]+[sopt.cx sopt.cy]);
 slm.setData(SLMCorrection); slm.update;
