@@ -7,7 +7,7 @@
 addpath('C:\git\bpm'); % add bpm path
 
 %% simulation starting parameters
-f_depth = 80;                  % focus depth (in um) % Note: update in between measurements
+f_depth = 320;                  % focus depth (in um) % Note: update in between measurements
 opt.pixel_size = 1/3;           % grid pixel size (in um)
 n_pdms =1.41;                   % PDMS Refractive index 
 n_water = 1.33;                 % water refractive index

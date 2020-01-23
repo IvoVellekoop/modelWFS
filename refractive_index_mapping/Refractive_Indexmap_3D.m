@@ -1,3 +1,7 @@
+
+
+
+
 %%% Script to convert the TPM 3D  image to a refractive index
 %%% distribution. This code fits the the intensity along the each z-columns
 %%% to sigmoid function and find out the point of inflection. We assign the

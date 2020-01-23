@@ -3,7 +3,7 @@
 % Image is 180 degree rotated and scaling in X and Y axis are different.
 
 addpath('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191223_WFScomparison_vs_depth_PDMSdiffuser');
-filename = 'RefractiveIndex1X512_00001.tif'; %Change this file name to shear the TPM images acquired using scan image
+filename = 'PDMS_1X512_00001.tif'; %Change this file name to shear the TPM images acquired using scan image
 
 %% Settings
 im_width = 500;         % specified crop size of TPM image (in um) 
