@@ -72,6 +72,6 @@ SLMCorrection=angle(CorrectionWF_SLM)*(256/(2*pi));   % correction wavefront in 
 SLMCorrection=flip(SLMCorrection,1);                       % pattern flipped because of 4f-system between objective and SLM
 figure(); imagesc(SLMCorrection);  
 %% save data
-dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191223_WFScomparison_vs_depth_PDMSdiffuser\';
-filename = ['d',num2str(f_depth,'%.3d'),'um_model.mat'];
-save([dirname,filename],'SLMCorrection','f_depth','CorrectionWF_SLM');
+% dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\191223_WFScomparison_vs_depth_PDMSdiffuser\';
+% filename = ['d',num2str(f_depth,'%.3d'),'um_model.mat'];
+% save([dirname,filename],'SLMCorrection','f_depth','CorrectionWF_SLM');
