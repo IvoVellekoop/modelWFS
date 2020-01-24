@@ -12,17 +12,16 @@ f_depth_set = 80:20:320; % all data
 diameter = 0.95;    % diameter of the wavefront (0.95 originally, but can be adjusted for more dark space)
 
 % colormap used to represent phase of the images
-cm = load('../../utilities/Colormaps/cyclic_colormap.mat');
-cm = cm.cyclic_colormap;
+load('../../utilities/Colormaps/cyclic_colormap2.mat');
 
 %% Create SLM object to display wavefronts on
-slm = SLM(2); slm.setData(0); slm.update
+slm = SLM(3); slm.setData(0); slm.update
 test_pattern = double( flipud(slm.getPixels'))*2*pi;
 Nx = size(test_pattern);
 
 %% open figure and set size
 fig = figure(1); clf; 
-set(fig,'Position',[1147 452 442 420]);
+set(fig,'Position',[984 61 919 876]);
 
 %% generate figures of Hadamard optimization patterns
 for f = 1:numel(f_depth_set)
