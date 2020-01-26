@@ -70,18 +70,18 @@ x_focus_ref=x_focus_ref(x_focus_ref<upper);
 %repeat for feedback-based
 [y_focus_feedback_window,x_focus_feedback_window] = find(frame_feedback_window == max(frame_feedback_window(:)),1);
 [y_focus_feedback,x_focus_feedback] = find(frame_feedback == max(frame_feedback_window(:)),1); 
-% y_focus_feedback=y_focus_feedback(y_focus_feedback<upper);
-% y_focus_feedback=y_focus_feedback(y_focus_feedback>lower);
-% x_focus_feedback=x_focus_feedback(x_focus_feedback<upper);
-% x_focus_feedback=x_focus_feedback(x_focus_feedback>lower);
+y_focus_feedback=y_focus_feedback(y_focus_feedback<upper);
+y_focus_feedback=y_focus_feedback(y_focus_feedback>lower);
+x_focus_feedback=x_focus_feedback(x_focus_feedback<upper);
+x_focus_feedback=x_focus_feedback(x_focus_feedback>lower);
 
 %repeat for model-based
 [y_focus_model_window,x_focus_model_window] = find(frame_model_window == max(frame_model_window(:)),1);
 [y_focus_model,x_focus_model] = find(frame_model== max(frame_model_window(:)),1);
-% y_focus_model=y_focus_model(y_focus_model<upper);
-% y_focus_model=y_focus_model(y_focus_model>lower);
-% x_focus_model=x_focus_model(x_focus_model<upper);
-% x_focus_model=x_focus_model(x_focus_model>lower);
+y_focus_model=y_focus_model(y_focus_model<upper);
+y_focus_model=y_focus_model(y_focus_model>lower);
+x_focus_model=x_focus_model(x_focus_model<upper);
+x_focus_model=x_focus_model(x_focus_model>lower);
 
 % Zoom the data around a maximum intensity point for each frames
 Ns=5;                            %  Number of pixels to select square
