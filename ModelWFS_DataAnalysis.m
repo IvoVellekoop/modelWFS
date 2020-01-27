@@ -54,41 +54,33 @@ frame_ref_window=frame_ref(round(end/2)-window:round(end/2)+window-1,round(end/2
 frame_feedback_window=frame_feedback(round(end/2)-window:round(end/2)+window-1,round(end/2)-window:round(end/2)+window-1);
 frame_model_window=frame_model(round(end/2)-window:round(end/2)+window-1,round(end/2)-window:round(end/2)+window-1);
 
-% Find the maximum intensity at each frame. Add lower and Upper bounds for the data. These bounds are to make sure
-% that the data is not close to the boundary where we can select a small
-% square region for averaging intensity
+% Find the maximum intensity at each frame. Find where is the maximum
+% intensity pixel in the full frame. 
 
-lower=20; upper=350;
+
 % reference data
 [y_focus_ref_window,x_focus_ref_window] = find(frame_ref_window == max(frame_ref_window(:)),1);
-[y_focus_ref,x_focus_ref] = find(frame_ref == max(frame_ref_window(:)),1);
-y_focus_ref=y_focus_ref(y_focus_ref>lower);
-y_focus_ref=y_focus_ref(y_focus_ref<upper);
-x_focus_ref=x_focus_ref(x_focus_ref>lower);
-x_focus_ref=x_focus_ref(x_focus_ref<upper);
+pixel_difference_y=41; % Difference between the starting frames in windowed frame and full frame
+pixel_difference_x=46; % Difference between the starting frames in windowed frame and full frame
+y_focus_ref = y_focus_ref_window+pixel_difference_y;
+x_focus_ref=x_focus_ref_window+pixel_difference_x;
 
 %repeat for feedback-based
 [y_focus_feedback_window,x_focus_feedback_window] = find(frame_feedback_window == max(frame_feedback_window(:)),1);
-[y_focus_feedback,x_focus_feedback] = find(frame_feedback == max(frame_feedback_window(:)),1); 
-y_focus_feedback=y_focus_feedback(y_focus_feedback<upper);
-y_focus_feedback=y_focus_feedback(y_focus_feedback>lower);
-x_focus_feedback=x_focus_feedback(x_focus_feedback<upper);
-x_focus_feedback=x_focus_feedback(x_focus_feedback>lower);
+y_focus_feedback = y_focus_feedback_window+pixel_difference_y;
+x_focus_feedback=x_focus_feedback_window+pixel_difference_x;
 
 %repeat for model-based
 [y_focus_model_window,x_focus_model_window] = find(frame_model_window == max(frame_model_window(:)),1);
-[y_focus_model,x_focus_model] = find(frame_model== max(frame_model_window(:)),1);
-y_focus_model=y_focus_model(y_focus_model<upper);
-y_focus_model=y_focus_model(y_focus_model>lower);
-x_focus_model=x_focus_model(x_focus_model<upper);
-x_focus_model=x_focus_model(x_focus_model>lower);
+y_focus_model = y_focus_model_window+pixel_difference_y;
+x_focus_model=x_focus_model_window+pixel_difference_x;
 
 % Zoom the data around a maximum intensity point for each frames
 Ns=5;                            %  Number of pixels to select square
 frame_ref_zoom = frame_ref(y_focus_ref-Ns:y_focus_ref+Ns,x_focus_ref-Ns:x_focus_ref+Ns);
 frame_feedback_zoom=frame_feedback(y_focus_feedback-Ns:y_focus_feedback+Ns,x_focus_feedback-Ns:x_focus_feedback+Ns);
 frame_model_zoom = frame_model(y_focus_model-Ns:y_focus_model+Ns,x_focus_model-Ns:x_focus_model+Ns);
-
+% 
 % figure, imagesc(frame_ref_zoom); ylabel('y (um)'); xlabel('z (um)');
 % figure, imagesc(frame_feedback_zoom); ylabel('y (um)'); xlabel('z (um)');
 % figure, imagesc(frame_model_zoom); ylabel('y (um)'); xlabel('z (um)');
