@@ -6,7 +6,7 @@ load('P:\TNW\BMPI\Users\Abhilash Thendiyammal\Research@UT\Data\191223_WFScompari
 
 %% plot parameters
 Ns=10;                             % size of square considered when determining average intensity
-Ithresh = 0.5;                     % intensity threshold used for bead segmentation
+Ithresh = 0;                     % intensity threshold used for bead segmentation
 Nframes=150;                       % Number of frames selected for Max Intensity projection            
 
 %% Parameters for converting TPM frames to correct dimensions in um
@@ -39,47 +39,30 @@ Intensity_ref = zeros(size(TPM3Dref,3),1);
 Intensity_feedback = zeros(size(TPM3Dfeedback,3),1);
 Intensity_model = zeros(size(TPM3Dmodel,3),1);
 
+% create moving average filter for detecting highest signal in image
+f = 1/(Ns^2).*ones(Ns,Ns);
+
 for fn=1:size(TPM3Dref,3)
 % consider intensity distribution of single slice
 frame_ref = TPM3Dref(:,:,fn);
 frame_feedback = TPM3Dfeedback(:,:,fn);
 frame_model = TPM3Dmodel(:,:,fn);
 
-% slightly crop edge of image to make sure a square window can always be made 
-frame_ref_crop = frame_ref(Ns/2:end-Ns/2-1,Ns/2:end-Ns/2);
-frame_feedback_crop = frame_feedback(Ns/2:end-Ns/2-1,Ns/2+1:end-Ns/2);
-frame_model_crop = frame_model(Ns/2:end-Ns/2-1,Ns/2:end-Ns/2);
+% apply moving average filter to git rid of noise
+F_ref = conv2(frame_ref,f,'same');
+F_feedback = conv2(frame_feedback,f,'same');
+F_model = conv2(frame_model,f,'same');
 
-% maximum intensity of frame slice
-Imax_ref = max(frame_ref_crop(:));
-Imax_feedback = max(frame_feedback_crop(:));
-Imax_model = max(frame_model_crop(:));
-
-% determine location bead by looking for maximum intensity in frame slice
-[y_bead_ref, x_bead_ref] = find(frame_ref_crop == Imax_ref,1);
-[y_bead_feedback, x_bead_feedback] = find(frame_feedback_crop == Imax_feedback,1);
-[y_bead_model, x_bead_model] = find(frame_model_crop == Imax_model,1);
-
-% consider only a small window of Ns x Ns around maximum intensity location
-frame_ref_zoom = frame_ref(y_bead_ref+(1:Ns),x_bead_ref+(1:Ns));
-frame_feedback_zoom=frame_feedback(y_bead_feedback+(1:Ns),x_bead_feedback+(1:Ns));
-frame_model_zoom = frame_model(y_bead_model+(1:Ns),x_bead_model+(1:Ns));
-
-% 50% threshold to segment bead and remove background
-frame_ref_zoom(frame_ref_zoom < Ithresh*Imax_ref) = [];
-frame_feedback_zoom(frame_feedback_zoom < Ithresh*Imax_feedback) = [];
-frame_model_zoom(frame_model_zoom < Ithresh*Imax_model) = [];
-
-% determine average intensity of bead pixels
-Intensity_ref(fn)=mean2(frame_ref_zoom);
-Intensity_feedback(fn)=mean2(frame_feedback_zoom);
-Intensity_model(fn)=mean2(frame_model_zoom);
+% take maximum signal in low-pass filtered image
+Intensity_ref(fn) = max(F_ref(:));
+Intensity_feedback(fn) = max(F_feedback(:));
+Intensity_model(fn) = max(F_model(:));
 end
 
 %% Average Noise level
 % Noise=squeeze(TPM3Dref(round(end/2),round(end/2),1));
-Noise=mean(mean((TPM3Dref(1:20,1:20,1))));                                  % mean of the intensity across a small noisy region of the first frame
-
+% Noise=mean(mean((TPM3Dref(1:20,1:20,1))));                                  % mean of the intensity across a small noisy region of the first frame
+Noise = mean2(TPM3Dref(:,:,end));
 %% Plot the 2D cross-section of intensities (Maximum Intensity projection)
 A=squeeze(MaxIntensity_TPM3Dref(1,:,FStart:end));
 B=squeeze(MaxIntensity_TPM3Dfeedback(1,:,FStart:end));
@@ -102,4 +85,4 @@ D1=ones(1,size(z_data,2)).*double(Noise);
 hold on,semilogy(z_data,D1(:),'black:','MarkerSize',20,'MarkerEdgeColor','black','LineWidth',3)
 legend('No correction','Feedback based WFS','Model based WFS','average noise level');set(gca,'FontSize',20);ylabel(['Intensity (counts)']);  xlabel(['Depth ' um]);
 set(gca,'box','on');set(legend,'box','off')
-xlim([dnom(1)+round(FStart/2) 325]);ylim([5e1 9e3]);
+xlim([dnom(1)+round(FStart/2) 325]);ylim([3e1 1e4]);
