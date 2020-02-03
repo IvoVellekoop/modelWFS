@@ -4,11 +4,16 @@ close all
 
 load('P:\TNW\BMPI\Users\Abhilash Thendiyammal\Research@UT\Data\191223_WFScomparison_vs_depth_PDMSdiffuser\TPM3D_StichedFiles.mat')
 
+%% plot parameters
+Ns=10;                             % size of square considered when determining average intensity
+Ithresh = 0.5;                     % intensity threshold used for bead segmentation
+Nframes=150;                       % Number of frames selected for Max Intensity projection            
+
 %% Parameters for converting TPM frames to correct dimensions in um
 zoom = 30;                                                 % zoom factor from TPM scan image aquisition  
 numPixels= 256;                                            % Pixels in TPM frame
-resX = 512/(numPixels*zoom)                                % base x resolution of the image
-resY = 512/(numPixels*zoom)                                % base y resolution
+resX = 512/(numPixels*zoom);                               % base x resolution of the image
+resY = 512/(numPixels*zoom);                               % base y resolution
 x_data= -(size(TPM3Dref,1)/2)*resX:resX:(size(TPM3Dref,1)/2)*resX;
 y_data= -(size(TPM3Dref,2)/2)*resY:resY:(size(TPM3Dref,2)/2)*resY;
 
@@ -24,71 +29,51 @@ n_water=1.33;                                                               % Wa
 z_data=z_data*n_pdms/n_water;                                               % Original depth inside PDMS
 
 %% Calculate Maximum Intensity projection
-
-Nframes=150;                                                                % Number of frames selected for Max Intensity projection            
 MaxIntensity_TPM3Dref=max(TPM3Dref(end/2-Nframes:end/2+Nframes-1,:,:),[],1);
 MaxIntensity_TPM3Dfeedback=max(TPM3Dfeedback(end/2-Nframes:end/2+Nframes-1,:,:),[],1);
 MaxIntensity_TPM3Dmodel=max(TPM3Dmodel(end/2-Nframes:end/2+Nframes-1,:,:),[],1);
 
-%% Calculate the average intensity counts from each frames around a window size of 11pixels X 11pixels
+%% Calculate the average bead intensity from each frame slice
+%preallocation
+Intensity_ref = zeros(size(TPM3Dref,3),1);
+Intensity_feedback = zeros(size(TPM3Dfeedback,3),1);
+Intensity_model = zeros(size(TPM3Dmodel,3),1);
 
-frame_number=1:1:size(TPM3Dref,3);                      % total frames
+for fn=1:size(TPM3Dref,3)
+% consider intensity distribution of single slice
+frame_ref = TPM3Dref(:,:,fn);
+frame_feedback = TPM3Dfeedback(:,:,fn);
+frame_model = TPM3Dmodel(:,:,fn);
 
-for fn=1:numel(frame_number)
-    
-frame_ref = TPM3Dref(:,:,frame_number(fn));
-frame_feedback = TPM3Dfeedback(:,:,frame_number(fn));
-frame_model = TPM3Dmodel(:,:,frame_number(fn));
+% slightly crop edge of image to make sure a square window can always be made 
+frame_ref_crop = frame_ref(Ns/2:end-Ns/2-1,Ns/2:end-Ns/2);
+frame_feedback_crop = frame_feedback(Ns/2:end-Ns/2-1,Ns/2+1:end-Ns/2);
+frame_model_crop = frame_model(Ns/2:end-Ns/2-1,Ns/2:end-Ns/2);
 
-% plot the frames (test)
-% Imax = max([frame_ref(:);frame_feedback(:);frame_model(:)]);
-% figure();colormap(hot); 
-% subplot(1,3,1); imagesc(x_data,y_data,frame_ref,[0,Imax]); xlabel('x (um)');  ylabel('y (um)'); colorbar; axis image; title('TPMimage'); set(gca,'FontSize',16);
-% subplot(1,3,2); imagesc(x_data,y_data,frame_feedback,[0,Imax]);  xlabel('x (um)');  ylabel('y (um)'); colorbar; axis image; title('TPMimage with feedbackWFS'); set(gca,'FontSize',16);
-% subplot(1,3,3); imagesc(x_data,y_data,frame_model,[0,Imax]);  xlabel('x (um)');  ylabel('y (um)');  colorbar;axis image; title('TPMimage with  modelWFS'); set(gca,'FontSize',16);
+% maximum intensity of frame slice
+Imax_ref = max(frame_ref_crop(:));
+Imax_feedback = max(frame_feedback_crop(:));
+Imax_model = max(frame_model_crop(:));
 
+% determine location bead by looking for maximum intensity in frame slice
+[y_bead_ref, x_bead_ref] = find(frame_ref_crop == Imax_ref,1);
+[y_bead_feedback, x_bead_feedback] = find(frame_feedback_crop == Imax_feedback,1);
+[y_bead_model, x_bead_model] = find(frame_model_crop == Imax_model,1);
 
-% Choose a square region of the image.
-window=150;
-frame_ref_window=frame_ref(round(end/2)-window:round(end/2)+window-1,round(end/2)-window:round(end/2)+window-1);
-frame_feedback_window=frame_feedback(round(end/2)-window:round(end/2)+window-1,round(end/2)-window:round(end/2)+window-1);
-frame_model_window=frame_model(round(end/2)-window:round(end/2)+window-1,round(end/2)-window:round(end/2)+window-1);
+% consider only a small window of Ns x Ns around maximum intensity location
+frame_ref_zoom = frame_ref(y_bead_ref+(1:Ns),x_bead_ref+(1:Ns));
+frame_feedback_zoom=frame_feedback(y_bead_feedback+(1:Ns),x_bead_feedback+(1:Ns));
+frame_model_zoom = frame_model(y_bead_model+(1:Ns),x_bead_model+(1:Ns));
 
-% Find the maximum intensity at each frame. Find where is the maximum
-% intensity pixel in the full frame. 
+% 50% threshold to segment bead and remove background
+frame_ref_zoom(frame_ref_zoom < Ithresh*Imax_ref) = [];
+frame_feedback_zoom(frame_feedback_zoom < Ithresh*Imax_feedback) = [];
+frame_model_zoom(frame_model_zoom < Ithresh*Imax_model) = [];
 
-
-% reference data
-[y_focus_ref_window,x_focus_ref_window] = find(frame_ref_window == max(frame_ref_window(:)),1);
-pixel_difference_y=41; % Difference between the starting frames in windowed frame and full frame
-pixel_difference_x=46; % Difference between the starting frames in windowed frame and full frame
-y_focus_ref = y_focus_ref_window+pixel_difference_y;
-x_focus_ref=x_focus_ref_window+pixel_difference_x;
-
-%repeat for feedback-based
-[y_focus_feedback_window,x_focus_feedback_window] = find(frame_feedback_window == max(frame_feedback_window(:)),1);
-y_focus_feedback = y_focus_feedback_window+pixel_difference_y;
-x_focus_feedback=x_focus_feedback_window+pixel_difference_x;
-
-%repeat for model-based
-[y_focus_model_window,x_focus_model_window] = find(frame_model_window == max(frame_model_window(:)),1);
-y_focus_model = y_focus_model_window+pixel_difference_y;
-x_focus_model=x_focus_model_window+pixel_difference_x;
-
-% Zoom the data around a maximum intensity point for each frames
-Ns=5;                            %  Number of pixels to select square
-frame_ref_zoom = frame_ref(y_focus_ref-Ns:y_focus_ref+Ns,x_focus_ref-Ns:x_focus_ref+Ns);
-frame_feedback_zoom=frame_feedback(y_focus_feedback-Ns:y_focus_feedback+Ns,x_focus_feedback-Ns:x_focus_feedback+Ns);
-frame_model_zoom = frame_model(y_focus_model-Ns:y_focus_model+Ns,x_focus_model-Ns:x_focus_model+Ns);
-% 
-% figure, imagesc(frame_ref_zoom); ylabel('y (um)'); xlabel('z (um)');
-% figure, imagesc(frame_feedback_zoom); ylabel('y (um)'); xlabel('z (um)');
-% figure, imagesc(frame_model_zoom); ylabel('y (um)'); xlabel('z (um)');
-
-
-Intensity_ref(1,fn)=mean(mean(frame_ref_zoom));
-Intensity_feedback(1,fn)=mean(mean(frame_feedback_zoom));
-Intensity_model(1,fn)=mean(mean(frame_model_zoom));
+% determine average intensity of bead pixels
+Intensity_ref(fn)=mean2(frame_ref_zoom);
+Intensity_feedback(fn)=mean2(frame_feedback_zoom);
+Intensity_model(fn)=mean2(frame_model_zoom);
 end
 
 %% Average Noise level
@@ -96,7 +81,6 @@ end
 Noise=mean(mean((TPM3Dref(1:20,1:20,1))));                                  % mean of the intensity across a small noisy region of the first frame
 
 %% Plot the 2D cross-section of intensities (Maximum Intensity projection)
-
 A=squeeze(MaxIntensity_TPM3Dref(1,:,FStart:end));
 B=squeeze(MaxIntensity_TPM3Dfeedback(1,:,FStart:end));
 C=squeeze(MaxIntensity_TPM3Dmodel(1,:,FStart:end));
@@ -110,7 +94,7 @@ subplot(1,3,3); imagesc(x_data,z_data,C',[0,Imax_2]); ylabel(['z ' um]);  xlabel
 
 
 %% Semilog plots of Intensity before and after correction
-figure(2); 
+figure(2);
 semilogy(z_data,Intensity_ref(:),'bd','MarkerSize',10,'MarkerEdgeColor','b','LineWidth',1.5)
 hold on, semilogy(z_data,Intensity_feedback(:),'gs','MarkerSize',10,'MarkerEdgeColor','g','LineWidth',1.5)
 hold on,semilogy(z_data,Intensity_model(:),'ro','MarkerSize',10,'MarkerEdgeColor','r','LineWidth',1.5)
