@@ -7,8 +7,8 @@
 % close all
 
 %% Add relevant paths
-addpath('D:\git\tpm\setup');
-addpath('D:\git\PCT\Experiments');
+addpath('C:\git\tpm\setup');
+addpath('C:\git\PCT\Experiments');
 
 %% setup SLM and experimetal parameters
 active_devices.pmt_gain=true;
@@ -20,17 +20,18 @@ M=zeros(2);
 G=zeros(2);
 
 %% Apply shift to sample with Zaber stage and acquire images
-d =0.2;                                                       % displacement in um
+d =50;                                                       % displacement in um
+zoom=10;
 z2.moveDistance(d);
 frame_refX = double(hSI.hDisplay.lastFrame{1});             % Record a reference frame
 
-z2.moveDistance(-d);                                        % Move sample in X direction 
+z2.moveDistance(d);                                         % Move sample in X direction 
 frame_SampleXshifted = double(hSI.hDisplay.lastFrame{1});   % Record a shifted frame
 
 z1.moveDistance(d);                                         % Move sample back to initial position (-X direction)
 frame_refY = double(hSI.hDisplay.lastFrame{1});             % Record a reference frame
 
-z1.moveDistance(-d);                                        % Move sample in Y direction 
+z1.moveDistance(d);                                        % Move sample in Y direction 
 frame_SampleYshifted = double(hSI.hDisplay.lastFrame{1});   % Record a shifted frame
 
 %% Calculate the correlation between the images to find X and Y shift
