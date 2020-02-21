@@ -62,7 +62,7 @@ end
 %% Average Noise level
 % Noise=squeeze(TPM3Dref(round(end/2),round(end/2),1));
 % Noise=mean(mean((TPM3Dref(1:20,1:20,1))));                                  % mean of the intensity across a small noisy region of the first frame
-Noise = mean2(TPM3Dref(:,:,end));
+Ibg = mean2(TPM3Dref(:,:,end));
 %% Plot the 2D cross-section of intensities (Maximum Intensity projection)
 A=squeeze(MaxIntensity_TPM3Dref(1,:,FStart:end));
 B=squeeze(MaxIntensity_TPM3Dfeedback(1,:,FStart:end));
@@ -77,30 +77,40 @@ subplot(1,3,3); imagesc(y_data,z_data,C',[0,Imax_2]); ylabel(['z ' um]);  xlabel
 
 %% Fit for the uncorrected and ModelWFS
 %coefficients
-a1=1.226e4;
-a2=4.394e12;
-b=97.73;
-c=64.83;
+a1=1.241e4;         % coefficient model data
+a2=4.483e12;        % coefficient reference data
+b=0.006783;         % coefficient in exponent
+c=65.95;            % background intensity
+d=96.95;            % depth offset
 
 % fit_model
-fit_model = a1*exp(-0.006783*(z_data+b))
+fit_model = a1*exp(-b*(z_data+d))+c;
 
 % fit_model
-fit_reference= a2*(z_data+b).^-4.*exp(-0.006783*(z_data+b))+c;
+fit_reference= a2*(z_data+d).^-4.*exp(-b*(z_data+d))+c;
 
-
+Ibg = c;
 %% Semilog plots of Intensity before and after correction
-figure(2);
-p1= semilogy(z_data,Intensity_ref(:),'bd','MarkerSize',12,'LineWidth',1.25);
-hold on; p2= semilogy(z_data,Intensity_feedback(:),'gs','MarkerSize',12,'LineWidth',1.25);
-hold on; p3= semilogy(z_data,Intensity_model(:),'ro','MarkerSize',12,'LineWidth',1.25);
-D1=ones(1,size(z_data,2)).*double(Noise);
+% plot properties
+c_ref = [0, 0.4470, 0.7410];  % color reference data points
+c_model = [1,0,0];            % color model data points
+c_feedback = [0,0.8,0];       % color feedback data points
+dark_blue = [0,0,0.8];        % fit reference data
+dark_red = [.8,0,0];          % fit model data
+lw = 2;
+
+figure(2); clf;
+p1= semilogy(z_data,Intensity_ref(:),'d','color',c_ref,'MarkerSize',12,'LineWidth',1.25);
+hold on; p2= semilogy(z_data,Intensity_feedback(:),'s','color',c_feedback,'MarkerSize',12,'LineWidth',1.25);
+hold on; p3= semilogy(z_data,Intensity_model(:),'o','color',c_model,'MarkerSize',12,'LineWidth',1.25);
+D1=ones(1,size(z_data,2)).*double(Ibg);
 hold on; p4= semilogy(z_data,D1(:),'black:','MarkerSize',20,'MarkerEdgeColor','black','LineWidth',3);
 set(gca,'box','on');set(legend,'box','off')
-xlim([z_data(1) 325]);ylim([3e1 1e4]);
-hold on; p5= semilogy(z_data,fit_reference,'blue','MarkerSize',20,'MarkerEdgeColor','blue','LineWidth',1.5);legend('hide');
-hold on; p6= semilogy(z_data,fit_model,'red','MarkerSize',20,'MarkerEdgeColor','red','LineWidth',1.5);
+xlim([z_data(1) 325]);ylim([4e1 1e4]);
+hold on; p5= semilogy(z_data,fit_reference,'--','color',dark_blue,'LineWidth',lw);
+hold on; p6= semilogy(z_data,fit_model,'--','color',dark_red,'LineWidth',lw);
 
+set(gcf,'Position',[1388,799,1252,899]);
 legend([p1 p2 p3 p4], {'No correction','Feedback-based','Model-based','Average background level'});set(gca,'FontSize',20);ylabel(['Intensity (counts)']);  xlabel(['Depth ' um]);
 set(gca,'FontSize',24);
 set(legend,'FontSize',22);
