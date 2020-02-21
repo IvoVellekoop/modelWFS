@@ -2,9 +2,9 @@
 %  acquired from TPM images are in pixels %  This has to be converted into
 %  micrometers for using the data in various post processing codes.
 
-% clc
-% clear all 
-% close all
+clc
+clear all 
+close all
 
 %% Add relevant paths
 addpath('C:\git\tpm\setup');
