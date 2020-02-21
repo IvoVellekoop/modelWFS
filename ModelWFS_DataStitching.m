@@ -11,7 +11,7 @@ d_nom=[80:20:320];                                         % Imaging depths in u
 power_factor=(power_set./power_set(1)).^2;                 % Normalize the power values to the first value. Power factor by which intensity increase is sqaure of this ratio.
 gain_factor=(gain_set./gain_set(1));                       % Normalize gain values applied to first value (Intensity is linear to gain)
 gain=power_factor.*gain_factor;                            % We define a gain which is the comination of power factor and gain factor
-filename=['d',num2str(d_nom(1),'%.3d'),'um_00001','.tif']; % 00001,00002 and 00003 corresponds to Reference, Feedback_based and Modelbased TPM Data
+filename=['d',num2str(d_nom(1),'%.3d'),'um_00003','.tif']; % 00001,00002 and 00003 corresponds to Reference, Feedback_based and Modelbased TPM Data
 info = imfinfo(filename);
 
 %% Parameters for converting TPM frames to correct dimensions in um
@@ -35,12 +35,13 @@ endFrame =size(info,1);
 % Do this once and save the stiched files into a folder
 
 for k=1:numel(d_nom)
-filename=['d',num2str(d_nom(k),'%.3d'),'um_00001','.tif'];
+filename=['d',num2str(d_nom(k),'%.3d'),'um_00003','.tif'];
 info = imfinfo(filename);
         for i = startFrame:endFrame
             TPMImage = imread(filename,i, 'Info', info);
             TPMImage= imwarp(TPMImage,tform);
-            TPMImage(TPMImage<0)=0;                             % Remove negative values(background)
+%             TPMImage=TPMImage-min(min(TPMImage));
+%             TPMImage(TPMImage<0)=0;                             % Remove negative values(background)
 %             TPM_3D0(:,:,i) = TPMImage;                           % Raw (not normalized) frames
             TPM_3D0(:,:,i) = TPMImage./gain(k);               % Noramalized frames 
 %             TPM_3D0(:,:,i) = TPMImage./gain_factor(k);          % Normalized backgrounds                                                                    
@@ -56,5 +57,5 @@ end
 
 % TPM3Dref=cat(3,TPM_3D1,TPM_3D2,TPM_3D3,TPM_3D4,TPM_3D5,TPM_3D6,TPM_3D7,TPM_3D8,TPM_3D9,TPM_3D10,TPM_3D11,TPM_3D12,TPM_3D13);
 % TPM3Dfeedback=cat(3,TPM_3D1,TPM_3D2,TPM_3D3,TPM_3D4,TPM_3D5,TPM_3D6,TPM_3D7,TPM_3D8,TPM_3D9,TPM_3D10,TPM_3D11,TPM_3D12,TPM_3D13);
-% TPM3Dmodel=cat(3,TPM_3D1,TPM_3D2,TPM_3D3,TPM_3D4,TPM_3D5,TPM_3D6,TPM_3D7,TPM_3D8,TPM_3D9,TPM_3D10,TPM_3D11,TPM_3D12,TPM_3D13);
+TPM3Dmodel=cat(3,TPM_3D1,TPM_3D2,TPM_3D3,TPM_3D4,TPM_3D5,TPM_3D6,TPM_3D7,TPM_3D8,TPM_3D9,TPM_3D10,TPM_3D11,TPM_3D12,TPM_3D13);
 
