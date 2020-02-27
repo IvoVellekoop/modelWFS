@@ -7,7 +7,7 @@
 addpath('C:\git\bpm'); % add bpm path
 
 %% simulation starting parameters
-f_depth = 200;                  % focus depth (in um) % Note: update in between measurements
+f_depth = 150;                  % focus depth (in um) % Note: update in between measurements
 opt.pixel_size = 1/3;           % grid pixel size (in um)
 n_pdms =1.41;                   % PDMS Refractive index 
 n_water = 1.33;                 % water refractive index
@@ -15,8 +15,8 @@ opt.lambda = 0.804/n_water;     % wavelength in water (in um)
 focus_angle = 37;               % focusing angle of microscope objective (in water)
 
 % refractive index map (path way)
-dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\200226_ModelWFS_daniel_merle\';
-filename = 'SampleProps1.mat';
+dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\200227_ModelWFS_daniel_merle\';
+filename = 'SampleProperties.mat';
 
 %% Import 3D refractive index medium 
 load([dirname,filename]);
@@ -72,6 +72,6 @@ SLMCorrection=angle(CorrectionWF_SLM)*(256/(2*pi));   % correction wavefront in 
 SLMCorrection=flip(SLMCorrection,1);                       % pattern flipped because of 4f-system between objective and SLM
 figure(); imagesc(SLMCorrection);  
 %% save data
-dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\200226_ModelWFS_daniel_merle\';
+dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\200227_ModelWFS_daniel_merle\';
 filename = ['d',num2str(f_depth,'%.3d'),'um_model1.mat'];
 save([dirname,filename],'SLMCorrection','f_depth','CorrectionWF_SLM');

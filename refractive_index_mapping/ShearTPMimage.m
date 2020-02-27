@@ -2,15 +2,15 @@
 % This script is used to shear the TPM images according to the conversion matrices.
 % Image is 180 degree rotated and scaling in X and Y axis are different.
 
-addpath('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\200226_ModelWFS_daniel_merle');
-filename = '2x256_PDMS_00001.tif'; %Change this file name to shear the TPM images acquired using scan image
+addpath('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\200227_ModelWFS_daniel_merle');
+filename = '2x256_PDMS_z0um_00001.tif'; %Change this file name to shear the TPM images acquired using scan image
 
 %% Settings
-im_width = 500;         % specified crop size of TPM image (in um) 
+im_width = 350;         % specified crop size of TPM image (in um) 
 
 % scan image settings
 zoom = 2;
-numPixels= 512;
+numPixels= 256;
 
 %% Make 3D volime image from TPM images
 info = imfinfo(filename);
