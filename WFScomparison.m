@@ -1,6 +1,6 @@
 %%% script used to compare feedback-based wavefront shaping with
 %%% model-based wavefront shaping.
-%%% First run WFSsi to obtain ideal_wavefront and model-based WFS scripts
+%%% First run feedback_optimization to obtain ideal_wavefront and model-based WFS scripts
 %%% to obtain SLMCorrection
 
 %% General information

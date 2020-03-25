@@ -1,14 +1,10 @@
-
-
-
-
 %%% Script to convert the TPM 3D  image to a refractive index
 %%% distribution. This code fits the the intensity along the each z-columns
-%%% to sigmoid function and find out the point of inflection. We assign the
-%%% refractive index values at the both sides of the poit of inflection
-%%% with the apriori knowledge of refractive indices. Here, 1.33 and 1.41
-%%% for flurescene and PDMS meadia respectively.
-%%% Edited by Abhilash Thendiyammal 2018
+%%% to sigmoid functions and find out the point of inflection. 
+%%% Refractive index values at the both sides of the point of inflection
+%%% are assigned from apriori knowledge of values. Here, 1.33 and 1.41
+%%% for water-diluted fluorescein and PDMS medium respectively.
+%%% Edited by Abhilash Thendiyammal 2019
 
 %%
 clf
@@ -27,18 +23,18 @@ n_pdms = 1.41;                  % refractive index PDMS
 n_water = 1.33;                 % refractive index water
 
 %% In order to find the interface, fit each Z column to a sigmoid function
-% Downsample TPM 3d image to speed up fitting procedure
-stack_3D = imresize(TPM_3D,1/d_sample);    % downsample in x and y
-n_slices = size(stack_3D,3);     % number of slices in data set
+% Downsample TPM 3D image to speed up fitting procedure
+stack_3D = imresize(TPM_3D,1/d_sample);     % downsample in x and y
+n_slices = size(stack_3D,3);                % number of slices in data set
 z = (1:n_slices)';                          % depth coordinates TPM data
 
-% prellocation
+% preallocation
 z_interface = zeros(size(stack_3D,1),size(stack_3D,2)); % fitted depth cordinates for PDMS interface                      
 
 % find interface for each intensity line along depth by fitting
 starttime = now;
-for x_i=1:size(stack_3D,1)                      % loop through X-coordinates of each Image
-    for y_i=1:size(stack_3D,2)                  % loop through Y-coordinates of each image
+for x_i=1:size(stack_3D,1)                   % loop through X-coordinates of each Image
+    for y_i=1:size(stack_3D,2)               % loop through Y-coordinates of each image
         % select intensity along depth for given coordinates
         Idepth=stack_3D(x_i,y_i,:);                    
         

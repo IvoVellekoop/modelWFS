@@ -1,12 +1,16 @@
 %% Load saved stitched files (TPM frames with and without correction)
+% This code analyze the data and generate maximum intensity  of the TPM
+% 3D images before and after correction for scattering. 
+% Final part plot the intensity as a fuction of depth.
+
 clear all
 close all
 
-load('P:\TNW\BMPI\Users\Abhilash Thendiyammal\Research@UT\Data\191223_WFScomparison_vs_depth_PDMSdiffuser\TPM3D_StichedFiles.mat')
+load('P:\TNW\BMPI\Projects\WAVEFRONTSHAPING\publications\modelWFS\Data\TPM3D_StichedFiles.mat')
 
 %% plot parameters
 Ns=10;                             % size of square considered when determining average intensity
-Ithresh = 0;                     % intensity threshold used for bead segmentation
+Ithresh = 0;                       % intensity threshold used for bead segmentation
 Nframes=384;                       % Number of frames selected for Max Intensity projection            
 
 %% Parameters for converting TPM frames to correct dimensions in um

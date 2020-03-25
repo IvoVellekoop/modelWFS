@@ -1,6 +1,7 @@
 %% Script for finding conversion matrices. The image 
 %  acquired from TPM images are in pixels %  This has to be converted into
-%  micrometers for using the data in various post processing codes.
+%  micrometers for using the data in other codes like ShearTPMimage.m,
+%  ModelWFS_DataStitching etc.
 
 clc
 clear all 
@@ -99,14 +100,15 @@ M0=M./m;                                                      % Conversion matri
 G0=G.*8/pi;                                                   % Conversion matrix for SLM pixels to image shift
 
 %% Calculate the coordinates for mapping the Simulated (kx,ky) to SLM pixels. Four vertices of a square 
-% transforms to four vertices of a quadrilateral structure.
-A=[6.284 6.284];
+% transforms to four vertices of a quadrilateral structure. 
+
+A=[6.284 6.284];                                   % 2*pi (equivalent to kNA value of unity)
 Q1 = (1/1152).* G0*(M0)^-1*A';
-B=[6.284 -6.284];
+B=[6.284 -6.284];                                  % 2*pi (equivalent to kNA value of unity)
 Q2 = (1/1152).* G0*(M0)^-1*B';
-C=[-6.284 -6.284];
+C=[-6.284 -6.284];                                 % 2*pi (equivalent to kNA value of unity)
 Q3 = (1/1152).* G0*(M0)^-1*C';
-D=[-6.284 6.284];
+D=[-6.284 6.284];                                  % 2*pi (equivalent to kNA value of unity)
 Q4 = (1/1152).* G0*(M0)^-1*D';
 
 
