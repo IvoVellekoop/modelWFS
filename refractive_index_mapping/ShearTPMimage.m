@@ -2,20 +2,19 @@
 % This script is used to shear the TPM images according to the conversion matrices.
 % Edited by Abhilash Thendiyammal 2018
 
-%% add path to the raw TPM images
-addpath('\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\publications\modelWFS\Data\raw_images');
+%% add path to the raw TPM image
+data_dirname = '';                      % add data directory here  
+dirname = [data_dirname,'raw_images/']; % pathway to TPM image of diffuser surface
 filename = 'PDMS_diffuser_surface_1X512.tif';
 
 %% Settings
-im_width = 500;                                  % specified crop size of TPM image (in um) 
-
-% scanimage settings
-zoom = 1;
-numPixels= 512;
+im_width = 500;     % specified crop size of TPM image (in pixels) 
+zoom = 1;           % zoom factor used in scan image
+numPixels= 512;     % number of pixels 
 
 %% Extract info from TPM image file from ScanImage 
 info = imfinfo(filename);
-Nslices = size(info,1);                           % Number of 2D images
+Nslices = size(info,1);                           % Number of 2D image slices
 
 %% Use conversion matrix to shear the TPM image using imwarp function in matlab
 % find conversion matrix 
@@ -32,4 +31,4 @@ for i = 1:Nslices
     TPMimage = TPMimage(floor(end/2)+(-im_width/2:im_width/2-1), ...
                         floor(end/2)+(-im_width/2:im_width/2-1),:); % crop TPM image to specified image size
     TPM_3D(:,:,i) = TPMimage;
-end 
+end

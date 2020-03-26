@@ -3,15 +3,12 @@
 % 3D images before and after correction for scattering. 
 % Final part plot the intensity as a fuction of depth.
 
-clear all
 close all
 
-load('P:\TNW\BMPI\Projects\WAVEFRONTSHAPING\publications\modelWFS\Data\TPM3D_StichedFiles.mat')
-
-%% plot parameters
-Ns=10;                             % size of square considered when determining average intensity
-Ithresh = 0;                       % intensity threshold used for bead segmentation
-Nframes=384;                       % Number of frames selected for Max Intensity projection            
+%% load stitched TPM image data
+data_dirname = '';                      % add data directory here  
+filename = 'TPM3D_StichedFiles.mat';    % filename stitched TPM data
+load([data_dirname,filename]);
 
 %% Parameters for converting TPM frames to correct dimensions in um
 zoom = 30;                                                 % zoom factor from TPM scan image aquisition  
@@ -44,6 +41,7 @@ Intensity_feedback = zeros(size(TPM3Dfeedback,3),1);
 Intensity_model = zeros(size(TPM3Dmodel,3),1);
 
 % create moving average filter for detecting highest signal in image
+Ns=10;                             % size of square considered when determining average intensity        
 f = 1/(Ns^2).*ones(Ns,Ns);
 
 for fn=1:size(TPM3Dref,3)
@@ -63,10 +61,6 @@ Intensity_feedback(fn) = max(F_feedback(:));
 Intensity_model(fn) = max(F_model(:));
 end
 
-%% Average Noise level
-% Noise=squeeze(TPM3Dref(round(end/2),round(end/2),1));
-% Noise=mean(mean((TPM3Dref(1:20,1:20,1))));                                  % mean of the intensity across a small noisy region of the first frame
-Ibg = mean2(TPM3Dref(:,:,end));
 %% Plot the 2D cross-section of intensities (Maximum Intensity projection)
 A=squeeze(MaxIntensity_TPM3Dref(1,:,FStart:end));
 B=squeeze(MaxIntensity_TPM3Dfeedback(1,:,FStart:end));

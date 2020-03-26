@@ -4,23 +4,16 @@
 %%% Refractive index values at the both sides of the point of inflection
 %%% are assigned from apriori knowledge of values. Here, 1.33 and 1.41
 %%% for water-diluted fluorescein and PDMS medium respectively.
+%%% Note: first run ShearTPMimage.m to obtain TPM_3D
 %%% Edited by Abhilash Thendiyammal 2019
 
-%%
-clf
-% close all
-% clear all
-addpath('..\..\..\utilities');
-
-n_slices = size(TPM_3D,3);
-
 %% Fitting parameters
-d_sample = 10;                  % downsample factor used to speed up fitting of surface
-u_sample = 3;                   % upsample factor from tpm data to simulation grid
-pdms_slices = 1:10;             % assumption: first 10 layers always consist of PDMS
-fluo_slices = n_slices+(-9:0);  % assumption: last 10 layers always consist of fluorescene
-n_pdms = 1.41;                  % refractive index PDMS
-n_water = 1.33;                 % refractive index water
+d_sample = 10;                      % downsample factor used to speed up fitting of surface
+u_sample = 3;                       % upsample factor from tpm data to simulation grid
+pdms_slices = 1:10;                 % assumption: first 10 layers always consist of PDMS
+fluo_slices = size(TPM_3D,3)+(-9:0);% assumption: last 10 layers always consist of fluorescene
+n_pdms = 1.41;                      % refractive index PDMS
+n_water = 1.33;                     % refractive index water
 
 %% In order to find the interface, fit each Z column to a sigmoid function
 % Downsample TPM 3D image to speed up fitting procedure
@@ -32,7 +25,6 @@ z = (1:n_slices)';                          % depth coordinates TPM data
 z_interface = zeros(size(stack_3D,1),size(stack_3D,2)); % fitted depth cordinates for PDMS interface                      
 
 % find interface for each intensity line along depth by fitting
-starttime = now;
 for x_i=1:size(stack_3D,1)                   % loop through X-coordinates of each Image
     for y_i=1:size(stack_3D,2)               % loop through Y-coordinates of each image
         % select intensity along depth for given coordinates
@@ -48,7 +40,6 @@ for x_i=1:size(stack_3D,1)                   % loop through X-coordinates of eac
         z_interface(x_i,y_i) = fit.b;
 %         figure(1);  clf; plot(fit); hold on; plot(z,Idepth_norm(:),'*b'); title(fit.b); pause(0.2); ylim([-0.2,1.2]);
     end    
-    eta(x_i, size(stack_3D,1), starttime, 'console', 'Fitting stuff...', 0);
 end
 
 % upscale fitted surface to simulation grid size (only x and y)

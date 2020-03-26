@@ -2,10 +2,6 @@
 %%% By manually changing the depth (variable-> f_depth) of the desired focus, we can simulate the
 %%% correction wavefront : Edited by Abhilash Thendiyammal 2019
 
-% clc;
-% close all; clear all
-addpath('C:\git\bpm');          % add bpm path
-
 %% simulation starting parameters
 f_depth = 300;                  % focus depth (in um) % Note: update in between measurements
 opt.pixel_size = 1/3;           % grid pixel size (in um)
@@ -14,12 +10,15 @@ n_water = 1.33;                 % water refractive index
 opt.lambda = 0.804/n_water;     % wavelength in water (in um)
 focus_angle = 37;               % focusing angle of microscope objective (in water)
 
-% refractive index map (path way)
-% dirname = 'Datapath';         % add data path
-% filename = 'SampleProperties.mat';
+%% set directory names
+addpath('..\bpm');                  % add pathway to beam propagation code
+data_dirname = '';                  % add data directory here  
+wf_dirname = 'wavefronts/';         % directory with ideal wavefront data 
+dirname = [data_dirname,wf_dirname];% combined directory name
 
 %% Import 3D refractive index medium 
-% load([dirname,filename]);
+filename = 'SampleProperties.mat';
+load([data_dirname,filename]);
 
 %% crop refractive index map to illuminated part only
 crop_size = round(f_depth*tand(focus_angle)/opt.pixel_size)*2; % reduced grid size
@@ -72,6 +71,6 @@ SLMCorrection=angle(CorrectionWF_SLM)*(256/(2*pi));               % correction w
 SLMCorrection=flip(SLMCorrection,1);                              % pattern flipped because of 4f-system between objective and SLM
 figure(); imagesc(SLMCorrection);  
 %% save data
-% dirname = '\\ad.utwente.nl\TNW\BMPI\Projects\WAVEFRONTSHAPING\data\TPM\3rd gen\200227_ModelWFS_daniel_merle\';
+% dirname = '';
 % filename = ['d',num2str(f_depth,'%.3d'),'um_model1.mat'];
 % save([dirname,filename],'SLMCorrection','f_depth','CorrectionWF_SLM');
