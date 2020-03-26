@@ -43,7 +43,3 @@ Data Analysis codes:
 2. ModelWFS_DataAnalysis.m - Generate maximum intensity projection. Compute mean intensity of the beads as a function of depth.
 
 3. plotSLMpatterns: Generate SLM patterns at different depths. Four patterns corresponding to four depths are used in the paper.
-
-4. TPM_Image_Calibration: This code is used to find the conversion matrix which converts TPM frames to correct size in micrometer with correct orientation.
-   This code also generates SLM coordinates corresponding to a spatial frequency (kNA) of the pupil plane. 
-   
