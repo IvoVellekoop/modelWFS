@@ -6,7 +6,7 @@
 %% General information
 f_depth = 300;                       % focus depth (in um) % Note: update in between measurements
 data_dirname = '';                   % add data directory here  
-wf_dirname = 'wavefronts/';          % directory with ideal wavefront data 
+wf_dirname = 'wavefronts\';          % directory with ideal wavefront data 
 dirname = [data_dirname,wf_dirname]; % combined directory name
 
 %% set flat wavefront

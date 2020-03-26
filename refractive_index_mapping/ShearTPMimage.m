@@ -4,7 +4,7 @@
 
 %% add path to the raw TPM image
 data_dirname = '';                      % add data directory here  
-dirname = [data_dirname,'raw_images/']; % pathway to TPM image of diffuser surface
+dirname = [data_dirname,'raw_images\']; % pathway to TPM image of diffuser surface
 filename = 'PDMS_diffuser_surface_1X512.tif';
 
 %% Settings

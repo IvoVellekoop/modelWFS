@@ -1,15 +1,17 @@
 %% Script for finding conversion matrices. The image 
 %  acquired from TPM images are in pixels %  This has to be converted into
 %  micrometers for using the data in other codes like ShearTPMimage.m,
-%  ModelWFS_DataStitching etc.
+%  ModelWFS_DataStitching etc. THis code is used only once during intial
+%  calibration, therefore not needed to test during analysing the data
+%  reported in the manuscript.
 
 clc
 clear all 
 close all
 
 %% Add relevant paths
-addpath('C:\git\tpm\setup');
-addpath('C:\git\PCT\Experiments');
+% addpath('C:\git\tpm\setup');
+% addpath('C:\git\PCT\Experiments');
 
 %% setup SLM and experimetal parameters
 active_devices.pmt_gain=true;

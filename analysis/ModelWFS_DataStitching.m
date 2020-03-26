@@ -4,7 +4,7 @@
 
 %% set data directory
 data_dirname = '';                    % add data directory here
-dirname = [data_dirname,'raw_images/'];       % combined directory name
+dirname = [data_dirname,'raw_images\'];       % combined directory name
 
 %% Load power and gain values used during the experiment
 load([dirname,'info.mat']);                 % Power and gain values during the experiment

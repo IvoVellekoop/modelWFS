@@ -30,6 +30,7 @@ n_water=1.33;                                                               % Wa
 z_data=z_data*n_pdms/n_water;                                               % Original depth inside PDMS
 
 %% Calculate Maximum Intensity projection
+Nframes=size(TPM3Dref,1);                       % Number of frames selected for Max Intensity projection            
 MaxIntensity_TPM3Dref=max(TPM3Dref(end/2+(-Nframes/2+1:Nframes/2),:,:),[],1);
 MaxIntensity_TPM3Dfeedback=max(TPM3Dfeedback(end/2+(-Nframes/2+1:Nframes/2),:,:),[],1);
 MaxIntensity_TPM3Dmodel=max(TPM3Dmodel(end/2+(-Nframes/2+1:Nframes/2),:,:),[],1);

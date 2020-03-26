@@ -3,7 +3,7 @@
 %%% correction wavefront : Edited by Abhilash Thendiyammal 2019
 
 %% simulation starting parameters
-f_depth = 300;                  % focus depth (in um) % Note: update in between measurements
+f_depth = 140;                  % focus depth (in um) % Note: update in between measurements
 opt.pixel_size = 1/3;           % grid pixel size (in um)
 n_pdms =1.41;                   % PDMS Refractive index 
 n_water = 1.33;                 % water refractive index
@@ -13,7 +13,7 @@ focus_angle = 37;               % focusing angle of microscope objective (in wat
 %% set directory names
 addpath('..\bpm');                  % add pathway to beam propagation code
 data_dirname = '';                  % add data directory here  
-wf_dirname = 'wavefronts/';         % directory with ideal wavefront data 
+wf_dirname = 'wavefronts\';         % directory with ideal wavefront data 
 dirname = [data_dirname,wf_dirname];% combined directory name
 
 %% Import 3D refractive index medium 
